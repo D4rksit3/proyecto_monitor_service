@@ -28,7 +28,7 @@ def restart(data):
 # Identificar el servicio web activo
 def identify_service():
     print("Verificando servicios activos...")  # Para depuración
-    services = ["apache2", "httpd", "tomcat"]
+    services = ["apache2", "httpd", "tomcat","haproxy"]
     for service in services:
         status = subprocess.run(["systemctl", "is-active", service], stdout=subprocess.PIPE)
         print(f"Verificando servicio {service}, estado: {status.stdout.decode().strip()}")  # Depuración
