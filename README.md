@@ -21,10 +21,17 @@ ExecStart=/usr/local/bin/agente
 Restart=always
 User=root
 Group=root
+StandardOutput=journal
+StandardError=journal
+Environment=PATH=/usr/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/local/sbin
 
 [Install]
 WantedBy=multi-user.target
 ####################################
 
 sudo systemctl daemon-reload
+sudo systemctl enable monitor.service
+sudo systemctl start monitor.service
+sudo systemctl status monitor.service
+
 ´´´
