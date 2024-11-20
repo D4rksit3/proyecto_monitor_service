@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Incluir Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212; /* Fondo oscuro */
+            color: #e0e0e0; /* Texto claro */
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+    
+        h1 {
+            text-align: center;
+            color: #ffffff; /* Título en blanco */
+            margin-bottom: 20px;
+        }
+    
+        /* Estilo para la tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #1e1e1e; /* Fondo de la tabla */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Sombra para la tabla */
+            border-radius: 8px; /* Bordes redondeados */
+            overflow: hidden;
+        }
+    
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #333333; /* Líneas de la tabla */
+        }
+    
+        th {
+            background-color: #333333; /* Fondo del encabezado */
+            color: #e0e0e0; /* Texto claro */
+            text-transform: uppercase;
+        }
+    
+        tr:nth-child(even) {
+            background-color: #242424; /* Fila par más clara */
+        }
+    
+        tr:nth-child(odd) {
+            background-color: #1e1e1e; /* Fila impar */
+        }
+    
+        /* Efecto al pasar el cursor por las filas */
+        tr:hover {
+            background-color: #383838; /* Resaltado al pasar el cursor */
+        }
+    
+        /* Resaltado de las filas actualizadas */
+        .highlight {
+            animation: highlight-animation 1s ease-in-out;
+        }
+    
+        @keyframes highlight-animation {
+            from {
+                background-color: #ffc107; /* Amarillo */
+            }
+            to {
+                background-color: transparent;
+            }
+        }
+    
+        /* Estilos del Modal */
+        .modal {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro translúcido */
+            padding-top: 60px;
+        }
+    
+        .modal-content {
+            background-color: #1e1e1e; /* Fondo del contenido */
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #333333; /* Borde del modal */
+            color: #e0e0e0; /* Texto claro */
+            width: 80%;
+            border-radius: 10px; /* Bordes redondeados */
+        }
+    
+        .close {
+            color: #aaaaaa; /* Botón de cerrar */
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    
+        .close:hover,
+        .close:focus {
+            color: #ffffff; /* Botón de cerrar al pasar el cursor */
+            text-decoration: none;
+        }
+    
+        /* Filtro de tiempo */
+        select {
+            background-color: #333333; /* Fondo del select */
+            color: #e0e0e0; /* Texto claro */
+            padding: 8px;
+            border: 1px solid #444444;
+            border-radius: 5px;
+        }
+    
+        select:focus {
+            outline: none;
+            border-color: #555555; /* Borde del select al enfocarse */
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Dashboard de Servicios</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>IP Address</th>
+                <th>Estado</th>
+                <th>Última Actualización</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in services %}
+            <tr onclick="openModal('{{ service.id }}', '{{ service.ip_address }}', '{{ service.status }}', '{{ service.last_status_change.strftime('%Y-%m-%d %H:%M:%S') }}')">
+                <td>{{ service.id }}</td>
+                <td>{{ service.ip_address }}</td>
+                <td>{{ service.status.capitalize() }}</td>
+                <td>{{ service.last_status_change.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- El Modal -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Detalles del Servicio</h2>
+            <p><strong>Hostname:</strong> <span id="modal-hostname"></span></p>
+            <p><strong>IP Address:</strong> <span id="modal-ip"></span></p>
+            <p><strong>Estado:</strong> <span id="modal-status"></span></p>
+            <p><strong>Última Actualización:</strong> <span id="modal-last-update"></span></p>
+    
+            <!-- Filtro de tiempo -->
+            <div style="margin-bottom: 20px;">
+                <label for="timeFilter">Mostrar logs de:</label>
+                <select id="timeFilter" onchange="applyTimeFilter()">
+                    <option value="3h" selected>Últimas 3 horas</option>
+                    <option value="24h">Últimas 24 horas</option>
+                    <option value="1w">Última semana</option>
+                </select>
+            </div>
+    
+            <!-- Gráfico de líneas -->
+            <canvas id="statusChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    
+
+    <script>
+        document.getElementById("serviceModal").style.display = "none";
+        let selectedTimeFilter = '3h'; // Valor predeterminado del filtro de tiempo
+        let statusChart = null; // Variable para el gráfico
+        // Inicializar conexión con el servidor Socket.IO
+const socket = io();
+
+// Escuchar actualizaciones en tiempo real de la tabla
+socket.on('update_table', function(updatedService) {
+    console.log("Actualización recibida para la tabla:", updatedService);
+
+    // Buscar la fila correspondiente al servicio en la tabla
+    const tableRows = document.querySelectorAll("tbody tr");
+    tableRows.forEach(row => {
+        const hostnameCell = row.cells[0].textContent; // El hostname está en la primera columna
+        if (hostnameCell === updatedService.hostname) {
+            // Actualizar las celdas con la nueva información
+            row.cells[1].textContent = updatedService.ip_address; // IP Address
+            row.cells[2].textContent = updatedService.status.charAt(0).toUpperCase() + updatedService.status.slice(1); // Estado
+            row.cells[3].textContent = updatedService.last_status_change; // Última Actualización
+            
+            // Cambiar el color de la celda de estado según el nuevo estado
+            if (updatedService.status === 'active') {
+                row.cells[2].style.color = 'green';
+            } else {
+                row.cells[2].style.color = 'red';
+            }
+        }
+    });
+});
+
+
+function openModal(hostname, ip, status, lastUpdate) {
+    // Llenar los detalles del modal
+    document.getElementById("modal-hostname").textContent = hostname;
+    document.getElementById("modal-ip").textContent = ip;
+    document.getElementById("modal-status").textContent = status;
+    document.getElementById("modal-last-update").textContent = lastUpdate;
+
+    // Conexión en tiempo real para actualizaciones
+    socket.emit('join_room', hostname); // Únete a una sala para este hostname
+
+    // Obtener logs iniciales al abrir el modal
+    fetch(`/get_logs?hostname=${hostname}&time_filter=${selectedTimeFilter}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener los logs del servidor');
+            }
+            return response.json();
+        })
+        .then(logs => {
+            if (logs.length === 0) {
+                alert("No se encontraron logs para este servicio.");
+                return;
+            }
+
+            // Convertir el formato de timestamp a objetos Date
+            logs.forEach(log => {
+                log.timestamp = new Date(log.timestamp.replace(" ", "T"));
+            });
+
+            // Crear el gráfico con los datos reales obtenidos del servidor
+            createChart(logs);
+
+            // Mostrar el modal después de que los datos estén cargados
+            document.getElementById("serviceModal").style.display = "block";
+        })
+        .catch(error => {
+            console.error("Error al obtener los logs:", error);
+            alert("Ocurrió un error al obtener los datos del servidor. Por favor, intenta nuevamente.");
+        });
+}
+
+
+function createChart(logs) {
+    // Si el gráfico ya existe, destrúyelo
+    if (statusChart) {
+        statusChart.destroy();
+    }
+
+    // Ordenar los logs por fecha
+    logs.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Crear los arrays de datos para el gráfico
+    const timestamps = logs.map(log => log.timestamp);
+    const statusData = logs.map(log => log.action === 'Servicio activo' ? 1 : 0);
+
+    // Crear el gráfico
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    statusChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: timestamps,
+            datasets: [{
+                label: 'Estado del Servicio',
+                data: statusData,
+                borderColor: 'rgba(0, 123, 255, 1)',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                stepped: true,
+                borderWidth: 2,
+                pointBackgroundColor: statusData.map(state => state === 1 ? '#4CAF50' : '#F44336'),
+                pointRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'minute'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Fecha y Hora'
+                    }
+                },
+                y: {
+                    min: 0,
+                    max: 1,
+                    ticks: {
+                        callback: value => value === 1 ? 'Activo' : 'Caído'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Estado del Servicio'
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+
+        // Mostrar el modal
+        document.getElementById("serviceModal").style.display = "block";
+
+     
+
+// Función para aplicar el filtro de tiempo
+function applyTimeFilter() {
+    // Obtener el valor del filtro seleccionado
+    selectedTimeFilter = document.getElementById("timeFilter").value;
+
+    // Cerrar y reabrir el modal con el nuevo filtro
+    closeModal();
+
+    const hostname = document.getElementById("modal-hostname").textContent;
+    const ip = document.getElementById("modal-ip").textContent;
+    const status = document.getElementById("modal-status").textContent;
+    const lastUpdate = document.getElementById("modal-last-update").textContent;
+
+    openModal(hostname, ip, status, lastUpdate);
+}
+
+        // Función para cerrar el modal
+        function closeModal() {
+            const hostname = document.getElementById("modal-hostname").textContent;
+
+            // Salir de la sala en tiempo real para este hostname
+            socket.emit('leave_room', hostname);
+
+            // Ocultar el modal
+            document.getElementById("serviceModal").style.display = "none";
+        }
+
+        // Cerrar el modal cuando se haga clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById("serviceModal");
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+    </script>
+</body>
+</html>
