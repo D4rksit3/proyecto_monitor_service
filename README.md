@@ -11,7 +11,7 @@ mv dist/agente /usr/local/bin/
 
 Creando el servicio
 sudo nano /etc/systemd/system/monitor.service
-###################################
+
 [Unit]
 Description=Monitor Agent Service
 After=network.target
@@ -27,7 +27,7 @@ Environment=PATH=/usr/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/local/sbin
 
 [Install]
 WantedBy=multi-user.target
-####################################
+
 
 sudo systemctl daemon-reload
 sudo systemctl enable monitor.service
