@@ -1,135 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        /* Fondo futurista */
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e1e1e, #121212);
-            color: #e0e0e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        /* Contenedor del login */
-        .login-container {
-            background-color: #1e1e1e;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 4px 15px rgba(0, 123, 255, 0.4);
-            width: 100%;
-            max-width: 400px;
-            position: relative;
-        }
-
-        /* Título futurista */
-        .login-container h1 {
-            color: #ffffff;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 24px;
-            text-shadow: 0 0 10px rgba(0, 123, 255, 0.8);
-        }
-
-        /* Input futurista */
-        .form-control {
-            background-color: #333333;
-            border: none;
-            border-radius: 8px;
-            color: #ffffff;
-            box-shadow: inset 0 0 5px rgba(0, 123, 255, 0.3);
-        }
-
-        .form-control:focus {
-            border: 1px solid #007bff;
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.8);
-            outline: none;
-        }
-
-        /* Botón futurista */
-        .btn-primary {
-            background: linear-gradient(135deg, #007bff, #004085);
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #0056b3, #002752);
-            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.6);
-        }
-
-        /* Efecto en mensajes */
-        .alert {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 14px;
-            background-color: #333333;
-            color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
-        }
-
-        /* Resplandor dinámico */
-        .glow {
-            position: absolute;
-            content: '';
-            top: -20px;
-            left: -20px;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(0, 123, 255, 0.4), transparent);
-            border-radius: 15px;
-            filter: blur(15px);
-            animation: pulse 2s infinite;
-            z-index: -1;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Tecnológico</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #1e1e2f, #2a2a40);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .login-container {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+    .login-container h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, #00e5ff, #6a00ff, #ff0099);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientText 3s infinite;
+    }
+    @keyframes gradientText {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .login-container input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    .login-container input[type="email"],
+    .login-container input[type="password"] {
+      background: #2a2a40;
+      color: white;
+    }
+    .login-container input:focus {
+      outline: none;
+      border: 2px solid #00e5ff;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      background: #00e5ff;
+      color: #1e1e2f;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .login-container button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 229, 255, 0.7);
+    }
+    .floating-circles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .floating-circles span {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 8s infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+    .floating-circles span:nth-child(1) {
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    .floating-circles span:nth-child(2) {
+      top: 50%;
+      left: 30%;
+      animation-delay: 2s;
+    }
+    .floating-circles span:nth-child(3) {
+      top: 70%;
+      left: 70%;
+      animation-delay: 4s;
+    }
+    .floating-circles span:nth-child(4) {
+      top: 40%;
+      left: 80%;
+      animation-delay: 1s;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="glow"></div>
-        <h1>Iniciar Sesión</h1>
-        <form action="/login" method="POST">
-            <div class="mb-3">
-                <label for="username" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </form>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="alert">
-                {% for category, message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% endwith %}
+  <div class="login-container">
+    <h1>Bienvenido</h1>
+    <form action="/login" method="POST">
+      <input type="email" name="email" placeholder="Correo electrónico" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <button type="submit">Iniciar Sesión</button>
+    </form>
+    <div class="floating-circles">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
+  </div>
 </body>
 </html>
