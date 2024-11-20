@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Tecnológico</title>
+  <title>Login Masculino</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #1e1e2f, #2a2a40);
-      color: white;
+      font-family: 'Arial', sans-serif;
+      background: #1a1a1a; /* Fondo negro mate */
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,62 +17,59 @@
       overflow: hidden;
     }
     .login-container {
-      background: rgba(0, 0, 0, 0.8);
+      background: #2c2c2c; /* Gris oscuro */
+      border: 1px solid #444; /* Borde sutil */
       padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      width: 100%;
-      max-width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
       text-align: center;
+      width: 100%;
+      max-width: 350px;
       position: relative;
     }
     .login-container h1 {
-      font-size: 2rem;
+      font-size: 1.8rem;
       margin-bottom: 1.5rem;
-      background: linear-gradient(90deg, #00e5ff, #6a00ff, #ff0099);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientText 3s infinite;
-    }
-    @keyframes gradientText {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      color: #00aaff; /* Azul acero */
+      font-weight: bold;
+      text-transform: uppercase;
     }
     .login-container input {
       width: 100%;
       padding: 0.8rem;
       margin: 0.5rem 0;
-      border: none;
-      border-radius: 5px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #1a1a1a;
+      color: #fff;
       font-size: 1rem;
-    }
-    .login-container input[type="email"],
-    .login-container input[type="password"] {
-      background: #2a2a40;
-      color: white;
     }
     .login-container input:focus {
       outline: none;
-      border: 2px solid #00e5ff;
+      border-color: #00aaff; /* Azul acero */
     }
     .login-container button {
       width: 100%;
       padding: 0.8rem;
       margin-top: 1rem;
-      background: #00e5ff;
-      color: #1e1e2f;
+      background: #00aaff;
+      color: #fff;
       border: none;
-      border-radius: 50px;
+      border-radius: 4px;
       font-size: 1rem;
+      font-weight: bold;
       cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: background 0.3s, transform 0.3s;
     }
     .login-container button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(0, 229, 255, 0.7);
+      background: #007acc; /* Azul más oscuro */
+      transform: translateY(-2px);
     }
-    .floating-circles {
+    .login-container button:active {
+      background: #005f99;
+      transform: translateY(0);
+    }
+    .metal-lines {
       position: absolute;
       top: 0;
       left: 0;
@@ -81,54 +78,37 @@
       pointer-events: none;
       overflow: hidden;
     }
-    .floating-circles span {
+    .metal-lines div {
       position: absolute;
-      width: 50px;
-      height: 50px;
+      width: 100%;
+      height: 1px;
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      animation: float 8s infinite;
+      animation: slide 8s linear infinite;
     }
-    @keyframes float {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0); }
-    }
-    .floating-circles span:nth-child(1) {
-      top: 20%;
-      left: 10%;
-      animation-delay: 0s;
-    }
-    .floating-circles span:nth-child(2) {
-      top: 50%;
-      left: 30%;
-      animation-delay: 2s;
-    }
-    .floating-circles span:nth-child(3) {
-      top: 70%;
-      left: 70%;
-      animation-delay: 4s;
-    }
-    .floating-circles span:nth-child(4) {
-      top: 40%;
-      left: 80%;
-      animation-delay: 1s;
+    .metal-lines div:nth-child(1) { top: 20%; }
+    .metal-lines div:nth-child(2) { top: 40%; animation-delay: 2s; }
+    .metal-lines div:nth-child(3) { top: 60%; animation-delay: 4s; }
+    .metal-lines div:nth-child(4) { top: 80%; animation-delay: 6s; }
+
+    @keyframes slide {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <h1>Bienvenido</h1>
+    <h1>Login</h1>
     <form action="/login" method="POST">
-      <input type="email" name="email" placeholder="Correo electrónico" required>
+      <input type="text" name="username" placeholder="Correo electrónico" required>
       <input type="password" name="password" placeholder="Contraseña" required>
       <button type="submit">Iniciar Sesión</button>
     </form>
-    <div class="floating-circles">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="metal-lines">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
     </div>
   </div>
 </body>
